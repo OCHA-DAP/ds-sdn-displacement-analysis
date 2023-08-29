@@ -61,8 +61,8 @@ df_dtm_disp_overall <- df_dtm_disp %>%
   ) %>%
   mutate(
     percent_change = (displacement - lag(displacement)) / lag(displacement),
-    percent_change_annual = (1 + percent_change)^12 - 1,
-    percent_change_daily = (1 + percent_change_annual)^(1/365) - 1
+    days = as.numeric(date - lag(date)),
+    percent_change_daily = (1 + percent_change)^(1/days) - 1
   )
 
 p_displacement$layers[[1]]$aes_params$colour <- hdx_hex("gray-medium")
@@ -119,7 +119,7 @@ df_dtm_disp_overall %>%
   geom_text(
     data = df_scen_growth,
     mapping = aes(
-      y = percent_change_daily + 0.001,
+      y = percent_change_daily + 0.002,
       label = label
     ),
     x = as.Date("2023-05-01")
