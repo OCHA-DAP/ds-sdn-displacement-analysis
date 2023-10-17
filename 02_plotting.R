@@ -47,7 +47,10 @@ p_displacement <- scenarios_list$adm_0 %>%
     x = "",
     y = "Total IDPS",
     title = "IDP forecasting scenarios in Sudan",
-    subtitle = "3 scenarios were developed immediately following the April 2023 crisis"
+    subtitle = "3 scenarios were developed immediately following the April 2023 crisis",
+    caption = paste0(
+      "Scenarios data provided by OCHA Sudan and the IOM DTM country team."
+    )
   )
 
 p_displacement
@@ -76,17 +79,26 @@ p_displacement +
   ) +
   geom_text(
     data = data.frame(
-      date = as.Date("2023-06-10"),
-      displacement = 2000000,
+      date = as.Date("2023-08-05"),
+      displacement = 3600000,
       label = "Reported displacement (DTM)"
     ),
     mapping = aes(
       label = label
     ),
-    angle = 40,
+    angle = 30,
     fontface = "bold",
     color = hdx_hex("tomato-hdx"),
     size = 4
+  ) +
+  scale_x_date(
+    date_labels = "%B %Y"
+  ) +
+  labs(
+    caption = paste0(
+      "Scenarios data provided by OCHA Sudan and the IOM DTM country team.\n",
+      "Reported displacement from the IOM DTM displacement snapshots, https://dtm.iom.int/sudan."
+    )
   )
 
 ##########################################

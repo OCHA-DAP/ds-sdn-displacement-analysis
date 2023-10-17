@@ -276,7 +276,14 @@ sheet_mapping <- list(
   "DTM_Sudan_Dataset_Situation_Sitrep_15_27_07_2023.xlsx" = "Master Dataset (26-07-2023)",
   "DTM_Sudan_Dataset_Situation_Sitrep_16_04_08_2023 (1).xlsx" = "Master Dataset (02 Aug 2023)",
   "DTM_Sudan_Dataset_Situation_Sitrep_17_10_08_2023.xlsx" = "Master Dataset (9 Aug 2023)",
-  "Master Dataset - Sit Rep 14 (EXTERNAL) (1)_19_07_2023.xlsx" = "Master Dataset ( 19 July 2023)"
+  "Master Dataset - Sit Rep 14 (EXTERNAL) (1)_19_07_2023.xlsx" = "Master Dataset ( 19 July 2023)",
+  "external-dataset-sit-rep-18-18_08_2023-external-hdx.xlsx" = "Master Dataset (16 Aug 2023)",
+  "master-dataset-snapshot-06-08_10_2023-external.xlsx" = "MASTER LIST External(ADMIN2)",
+  "master-dataset-27_09_2023-snapshot-05-admin2-hdx.xlsx" = "MASTER LIST External",
+  "weekly-displacement-snapshot-04-14_09_2023-external.xlsx" = "MASTER LIST",
+  "external-weekly-displacement-snapshot-03-09_09_2023hdx.xlsx" = "MASTER LIST",
+  "external-weekly-displacement-snapshot-02-02_09_2023-with-gps_hdx.xlsx" = "MASTER LIST",
+  "weekly-displacement-snapshot-01-01_09_2023-with-gps_hdx.xlsx" = "MASTER LIST (22 AUG 2023)"
 )
 
 # datasets containing a master dataset sheet
@@ -296,7 +303,7 @@ df_list <- imap(
 
 # some sheets have names in the first row and just need dropping the hex code in the first row
 
-for (i in c(1, 2, 4, 5, 10, 11, 12)) {
+for (i in c(1, 2, 4, 5, 10, 11, 12, 17)) {
   df_list[[i]] <- df_list[[i]] %>%
     slice(-1)
 }
@@ -306,9 +313,19 @@ df_list[[3]] <- df_list[[3]] %>%
   row_to_names(1)
 
 # some have hex codes and need to use row to names
-df_list[[9]] <- df_list[[9]] %>%
-  row_to_names(1) %>%
-  slice(-1)
+for (i in c(9, 18, 19, 21)) {
+  df_list[[i]] <- df_list[[i]] %>%
+    row_to_names(1) %>%
+    slice(-1)
+}
+
+# some have hex codes and need to use row to names and also clean those names for duplicates
+for (i in c(20, 22, 23)) {
+  df_list[[i]] <- df_list[[i]] %>%
+    row_to_names(1) %>%
+    clean_names() %>%
+    slice(-1)
+}
 
 # these files first need some rows dropped before getting wrangled
 df_list[[8]] <- df_list[[8]] %>%
@@ -346,7 +363,7 @@ for (i in c(6, 7, 8, 13, 14, 15, 16)) {
 }
 
 # now add date based on file date which is the date of the update
-for (i in 1:16) {
+for (i in 1:length(df_list)) {
   df_list[[i]]$date <- lubridate::dmy(str_extract(names(sheet_mapping)[i], "[0-9]{2}_[0-9]{2}_[0-9]{4}"))
 }
 
@@ -403,6 +420,7 @@ df_dtm_full <- map(
             "^state_pcode_of_affected_population$" = "ADM1_PCODE - displacement",
             "^state_code_10$" = "ADM1_PCODE - displacement",
             "^state_code_number_adm1_pcode$" = "ADM1_PCODE - displacement",
+            "^state_code_5$" = "ADM1_PCODE - displacement",
             "^locality_code$" = "ADM2_PCODE - displacement",
             "^locality_of_displacement_pcode$" = "ADM2_PCODE - displacement",
             "^displacement_locality_code$" = "ADM2_PCODE - displacement",
@@ -416,6 +434,7 @@ df_dtm_full <- map(
             "^origin_state_code$" = "ADM1_PCODE - origin",
             "^state_pcode_of_origin$" = "ADM1_PCODE - origin",
             "^state_code_19$" = "ADM1_PCODE - origin",
+            "^state_code_14$" = "ADM1_PCODE - origin",
             "^state_code_number_adm1_origin_pcode$" = "ADM1_PCODE - origin",
             "^origin_locality_code$" = "ADM2_PCODE - origin",
             "^locality_of_origin_pcode$" = "ADM2_PCODE - origin",
@@ -424,6 +443,7 @@ df_dtm_full <- map(
             "^locality_pcode_of_origin$" = "ADM2_PCODE - origin",
             "^locality_code_20$" = "ADM2_PCODE - origin",
             "^locality_code_number_adm2_origin_pcode$" = "ADM2_PCODE - origin",
+            "^locality_code_2$" = "ADM2_PCODE - origin",
             "^id_ps$" = "idps",
             "^number_idp_ind$" = "idps",
             "^nationality_by_id_ps_individuals_total_id_ps$" = "idps",
@@ -446,8 +466,11 @@ df_dtm_full <- map(
         date,
         `ADM1_PCODE - displacement`,
         `ADM2_PCODE - displacement`,
-        `ADM1_PCODE - origin`,
-        `ADM2_PCODE - origin`,
+        across(
+          any_of(
+            ends_with(" - origin")
+          )
+        ),
         idps = as.numeric(idps),
         hhs = as.numeric(hhs)
       )
