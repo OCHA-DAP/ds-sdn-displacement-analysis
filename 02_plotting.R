@@ -47,7 +47,7 @@ p_displacement <- scenarios_list$adm_0 %>%
     x = "",
     y = "Total IDPS",
     title = "IDP forecasting scenarios in Sudan",
-    subtitle = "3 scenarios were developed immediately following the April 2023 crisis",
+    subtitle = "",
     caption = paste0(
       "Scenarios data provided by OCHA Sudan and the IOM DTM country team."
     )
@@ -71,7 +71,7 @@ df_dtm_disp_overall <- df_dtm_disp %>%
 p_displacement$layers[[1]]$aes_params$colour <- hdx_hex("gray-medium")
 p_displacement$layers[[2]]$aes_params$colour <- hdx_hex("gray-medium")
 
-p_displacement +
+p_displacement2 <- p_displacement +
   geom_line(
     data = df_dtm_disp_overall,
     color = hdx_hex("tomato-hdx"),
@@ -99,6 +99,69 @@ p_displacement +
       "Scenarios data provided by OCHA Sudan and the IOM DTM country team.\n",
       "Reported displacement from the IOM DTM displacement snapshots, https://dtm.iom.int/sudan."
     )
+  )
+
+p_displacement2
+
+# look at the most recent scenarios
+ggplot(
+  data = df_scenarios2,
+  mapping = aes(
+    x = date,
+    y = displacement
+  )
+) +
+  geom_line(
+    data = df_dtm_disp_overall,
+    color = hdx_hex("tomato-hdx")
+  ) +
+  geom_line(
+    mapping = aes(
+      group = scenario
+    ),
+    color = "black"
+  ) +
+  geom_text(
+    data = data.frame(
+      date = as.Date("2024-03-25"),
+      displacement = c(10000000, 7500000, 3000000),
+      label = c("Worst case", "Status quo", "Best case")
+    ),
+    mapping = aes(
+      label = label
+    ),
+    fontface = "bold",
+    color = "black"
+  ) +
+  geom_text(
+    data = data.frame(
+      date = as.Date("2023-07-05"),
+      displacement = 3000000,
+      label = "Reported displacement (DTM)"
+    ),
+    mapping = aes(
+      label = label
+    ),
+    angle = 25,
+    fontface = "bold",
+    color = hdx_hex("tomato-hdx"),
+    size = 3
+  ) +
+  coord_cartesian(
+    clip = "off"
+  ) +
+  labs(
+    x = "",
+    y = "Total IDPs",
+    subtitle = "",
+    title = "Updated IDP forecasting scenarios in Sudan",
+    caption = paste0(
+      "Scenarios data provided by OCHA Sudan and the IOM DTM country team.\n",
+      "Reported displacement from the IOM DTM displacement snapshots, https://dtm.iom.int/sudan."
+    )
+  ) +
+  scale_y_continuous_hdx(
+    labels = scales::label_comma()
   )
 
 ##########################################
@@ -143,7 +206,10 @@ df_dtm_disp_overall %>%
   labs(
     x = "",
     y = "Approximate daily growth rate (%)",
-    title = "Observed daily growth rate in displacement since the crisis began"
+    title = "Observed daily growth rate in displacement since the crisis began",
+    caption = paste0(
+      "Scenarios data provided by OCHA Sudan and the IOM DTM country team."
+    )
   ) +
   scale_y_continuous(
     breaks = c(0, df_scen_growth$percent_change_daily),
@@ -241,10 +307,12 @@ df_acled_summary %>%
     color = hdx_hex("tomato-hdx"),
     fill = hdx_hex("tomato-light")
   ) +
+  geom_point()
   labs(
     x = "",
     y = "# of events (daily)",
-    title = "Number of reported conflict events per day from ACLED for all of 2023"
+    title = "Number of reported conflict events per day from ACLED for all of 2023",
+
   )
 
 # number of fatalities
@@ -256,14 +324,18 @@ df_acled_summary %>%
     )
   ) +
   geom_smooth(
-    color = hdx_hex("tomato-hdx"),
+    color = NA,
+    fill = hdx_hex("tomato-light")
+  ) +
+  geom_point(
     fill = hdx_hex("tomato-light")
   ) +
   labs(
     x = "",
     y = "# of fatalities (daily)",
-    title = "Number of reported fatalities per day from ACLED for all of 2023"
-  )
+    title = "Number of reported fatalities per day from ACLED, 2023"
+  ) +
+  scale_y_log10()
 
 ####################################################
 #### PERCENT CHANGE DISPLACEMENT GEOGRAPHICALLY ####

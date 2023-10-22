@@ -548,3 +548,38 @@ write_csv(
     "unhcr_data.csv"
   )
 )
+
+###########################
+#### UPDATED SCENARIOS ####
+###########################
+
+scen2_xl <- file.path(
+  input_dir,
+  "(External) ANNEX 1 IDPs_by_locality.xlsx"
+)
+
+df_scenarios2 <- map(
+  .x = excel_sheets(scen2_xl),
+  .f = \(sheet) {
+    read_excel(
+      scen2_xl,
+      sheet = sheet,
+      range = "E26:K26",
+      col_names = FALSE
+    ) |>
+      pivot_longer(
+        cols = everything(),
+        values_to = "displacement"
+      ) |>
+      transmute(
+        scenario = !!sheet,
+        date = seq.Date(
+          from = as.Date("2023-09-01"),
+          to = as.Date("2024-03-01"),
+          by = "month"
+        ) - days(1),
+        displacement
+      )
+  }
+) |>
+  list_rbind()
