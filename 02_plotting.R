@@ -32,7 +32,8 @@ p_displacement <- scenarios_list$adm_0 %>%
       label = label
     ),
     fontface = "bold",
-    color = "black"
+    color = "black",
+    size = 6
   ) +
   expand_limits(
     y = 0
@@ -51,9 +52,25 @@ p_displacement <- scenarios_list$adm_0 %>%
     caption = paste0(
       "Scenarios data provided by OCHA Sudan and the IOM DTM country team."
     )
+  ) +
+  theme(
+    plot.title = element_text(size = 30),
+    plot.caption = element_text(size = 16, hjust = 1, lineheight = 0.5),
+    axis.title = element_text(size = 20),
+    axis.text = element_text(size = 16)
   )
 
-p_displacement
+ggsave(
+  filename = file.path(
+    output_dir,
+    "plots",
+    "base_scenarios.png"
+  ),
+  plot = p_displacement,
+  width = 5,
+  height = 3,
+  units = "in"
+)
 
 # add in data that we have collected from DTM
 
@@ -89,7 +106,7 @@ p_displacement2 <- p_displacement +
     angle = 30,
     fontface = "bold",
     color = hdx_hex("tomato-hdx"),
-    size = 4
+    size = 6
   ) +
   scale_x_date(
     date_labels = "%B %Y"
@@ -101,10 +118,20 @@ p_displacement2 <- p_displacement +
     )
   )
 
-p_displacement2
+ggsave(
+  filename = file.path(
+    output_dir,
+    "plots",
+    "scenarios_displacement.png"
+  ),
+  plot = p_displacement2,
+  width = 5,
+  height = 3,
+  units = "in"
+)
 
 # look at the most recent scenarios
-ggplot(
+p_scenarios_recent <- ggplot(
   data = df_scenarios2,
   mapping = aes(
     x = date,
@@ -131,7 +158,8 @@ ggplot(
       label = label
     ),
     fontface = "bold",
-    color = "black"
+    color = "black",
+    size = 6
   ) +
   geom_text(
     data = data.frame(
@@ -145,7 +173,7 @@ ggplot(
     angle = 25,
     fontface = "bold",
     color = hdx_hex("tomato-hdx"),
-    size = 3
+    size = 6
   ) +
   coord_cartesian(
     clip = "off"
@@ -162,7 +190,25 @@ ggplot(
   ) +
   scale_y_continuous_hdx(
     labels = scales::label_comma()
+  ) +
+  theme(
+    plot.title = element_text(size = 30),
+    plot.caption = element_text(size = 16, hjust = 1, lineheight = 0.5),
+    axis.title = element_text(size = 20),
+    axis.text = element_text(size = 16)
   )
+
+ggsave(
+  filename = file.path(
+    output_dir,
+    "plots",
+    "scenarios_recent.png"
+  ),
+  plot = p_scenarios_recent,
+  width = 5,
+  height = 3,
+  units = "in"
+)
 
 ##########################################
 #### LOOK AT % CHANGE IN DISPLACEMENT ####
