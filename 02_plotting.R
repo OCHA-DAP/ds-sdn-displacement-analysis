@@ -47,7 +47,7 @@ p_displacement <- scenarios_list$adm_0 %>%
   labs(
     x = "",
     y = "Total IDPS",
-    title = "IDP forecasting scenarios in Sudan",
+    title = "IDP forecasting scenarios in Sudan as of mid-May 2023",
     subtitle = "",
     caption = paste0(
       "Scenarios data provided by OCHA Sudan and the IOM DTM country team."
@@ -55,6 +55,7 @@ p_displacement <- scenarios_list$adm_0 %>%
   ) +
   theme(
     plot.title = element_text(size = 30),
+    plot.subtitle = element_text(size = 24),
     plot.caption = element_text(size = 16, hjust = 1, lineheight = 0.5),
     axis.title = element_text(size = 20),
     axis.text = element_text(size = 16)
@@ -98,7 +99,7 @@ p_displacement2 <- p_displacement +
     data = data.frame(
       date = as.Date("2023-08-05"),
       displacement = 3600000,
-      label = "Reported displacement (DTM)"
+      label = "Estimated displacement (IOM)"
     ),
     mapping = aes(
       label = label
@@ -112,6 +113,7 @@ p_displacement2 <- p_displacement +
     date_labels = "%B %Y"
   ) +
   labs(
+    subtitle = "Compared with reported displacement from April to October 2023",
     caption = paste0(
       "Scenarios data provided by OCHA Sudan and the IOM DTM country team.\n",
       "Reported displacement from the IOM DTM displacement snapshots, https://dtm.iom.int/sudan."
@@ -182,7 +184,7 @@ p_scenarios_recent <- ggplot(
     x = "",
     y = "Total IDPs",
     subtitle = "",
-    title = "Updated IDP forecasting scenarios in Sudan",
+    title = "Updated IDP forecasting scenarios in Sudan as of September 2023",
     caption = paste0(
       "Scenarios data provided by OCHA Sudan and the IOM DTM country team.\n",
       "Reported displacement from the IOM DTM displacement snapshots, https://dtm.iom.int/sudan."
