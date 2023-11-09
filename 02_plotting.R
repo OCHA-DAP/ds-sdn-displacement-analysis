@@ -167,7 +167,7 @@ p_scenarios_recent <- ggplot(
     data = data.frame(
       date = as.Date("2023-07-05"),
       displacement = 3000000,
-      label = "Reported displacement (DTM)"
+      label = "Estimated displacement (IOM)"
     ),
     mapping = aes(
       label = label
